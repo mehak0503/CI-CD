@@ -1,0 +1,53 @@
+#This workflow will install dependencies and build containers for various microservices and run tests on the containers.
+
+name: Microservice Workflow
+
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name : Setup Python
+      uses:  actions/setup-python@v3
+      with:
+        python-version: '3.7.9'
+    - name: Start Mongodb
+      uses: supercharge/mongodb-github-action@1.7.0
+      with:
+        mongodb-version: '4.2'
+    - uses: actions/checkout@v3
+    - name: Install requirements
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r ./environment/requirements.txt
+    - name: Install container dependencies
+      working-directory: installation_scripts/linux
+      run: |
+        chmod +x *
+        bash 00_install_dependencies.sh 
+        bash 01_install_endpoint.sh 
+        bash 02_install_lp_orchestrator.sh
+        bash 03_install_data_preparation.sh  
+        bash 04_install_event_handler.sh
+        bash 05_install_analytics_orchestrator.sh
+        bash 06_install_data_configuration.sh
+        bash 07a_install_analytics_serverless_local.sh
+        bash 07b_install_event_handler_serverless_local.sh
+        bash 07c_install_data_prep_serverless_local.sh
+    - name: Run all the containers
+      working-directory: run_scripts/linux
+      run: |
+        chmod +x *
+        bash 01_run_endpoint.sh &
+        bash 02_run_lp_orchestrator.sh &
+        bash 03_run_data_preparation.sh &
+        bash 04_run_event_handler.sh &
+        bash 05_run_analytics_orchestrator.sh &
+        bash 06_run_data_configuration.sh &
+        bash 07a_run_analytics_serverless_local.sh &
+        bash 07b_run_event_handler_serverless_local.sh &
+        bash 07c_run_data_prep_serverless_local.sh &
+    - name: Run testcases
+      working-directory: integration-tests
+      run: |
+        python3 -m pytest tests
