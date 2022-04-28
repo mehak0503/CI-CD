@@ -1,0 +1,59 @@
+version: "3.9"
+services: 
+  endpoint:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_endpoint
+    image: endpoint:1.0
+    ports: 
+    - "3000:3000"
+  lp_orchestrator:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_lp_orchestrator
+    image: lp_orchestrator:1.0
+    ports: 
+    - "3001:3001"
+  event_handler:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_event_handler
+    image: event_handler:1.0
+    ports: 
+    - "3002:3002"
+  data_preparation:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_data_preparation
+    image: data_preparation:1.0
+    ports: 
+    - "3003:3003"
+  analytics_orchestrator:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_analytics_orchestrator
+    image: analytics_orchestrator:1.0
+    ports: 
+    - "3004:3004"
+  data_configuration:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_data_configuration
+    image: data_configuration:1.0
+    ports: 
+    - "3005:3005"
+  analytics_orchestrator_azure:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_analytics_orchestrator_azure
+    image: analytics_orchestrator_azure:1.0 
+  data_preparation_azure:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_data_preparation_azure
+    image: data_preparation_azure:1.0
+  event_handler_azure:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_event_handler_azure
+    image: event_handler_azure:1.0

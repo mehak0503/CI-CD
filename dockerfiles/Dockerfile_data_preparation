@@ -1,0 +1,16 @@
+FROM python:3.7.13-alpine3.15
+ADD . /
+WORKDIR /data_preparation
+RUN apk update && apk add python3-dev \
+                        gcc \
+                        libc-dev \
+			libffi-dev \
+			g++
+RUN pip3 install --no-cache --upgrade pip setuptools
+ADD ./data_preparation/requirements.txt /data_preparation
+RUN pip3 install --upgrade pip && \
+    pip3 install wheel &&\ 
+    pip3 install --default-timeout=100 -r requirements.txt
+EXPOSE 3003
+CMD ["python", "./data_preparation_src/routes/app.py","&"]
+

@@ -1,0 +1,16 @@
+FROM python:3.7.13-alpine3.15
+ADD . /
+WORKDIR /lp_orchestrator
+RUN apk update && apk add python3-dev \
+                        gcc \
+                        libc-dev \
+			libffi-dev \
+			g++
+ADD ./lp_orchestrator/requirements.txt /lp_orchestrator
+RUN pip3 install --no-cache --upgrade pip setuptools
+RUN pip3 install --upgrade pip && \
+    pip3 install wheel &&\ 
+    pip3 install --default-timeout=100 -r requirements.txt
+EXPOSE 3002
+CMD ["python", "./lp_orchestrator_src/routes/app.py"]
+

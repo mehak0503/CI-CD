@@ -1,0 +1,20 @@
+FROM python:3.7.13-alpine3.15
+ADD . /
+WORKDIR /event_handler
+RUN apk update && apk add python3-dev \
+                        gcc \
+                        libc-dev \
+			libffi-dev \
+			g++ \
+			rust \
+			cargo \
+			openssl-dev
+ADD ./event_handler/requirements.txt /event_handler
+RUN pip3 install --no-cache --upgrade pip && \
+    pip3 install setuptools setuptools_rust
+RUN pip3 install --upgrade pip && \
+    pip3 install wheel &&\ 
+    pip3 install --default-timeout=100 -r requirements.txt
+EXPOSE 3002
+CMD ["python", "./event_handler_src/app/app.py"]
+

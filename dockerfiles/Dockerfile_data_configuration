@@ -1,0 +1,14 @@
+FROM python:3.7.0-alpine
+ADD . /
+WORKDIR /data_configuration
+RUN apk update && apk add python3-dev \
+                        gcc \
+                        libc-dev
+RUN pip3 install --no-cache --upgrade pip setuptools
+ADD ./data_configuration/requirements.txt /data_configuration
+RUN pip3 install --upgrade pip && \
+    pip3 install wheel &&\ 
+    pip3 install --default-timeout=100 -r requirements.txt
+EXPOSE 3005
+CMD ["python", "./data_configuration_src/routes/app.py"]
+
